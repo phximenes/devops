@@ -127,15 +127,6 @@ http://rancher.ximenes.tec.br/redis/
 
 # docker rm -f $(docker ps -a -q)
 # docker volume rm $(docker volume ls)
-# docker image rm phximenes/nginx:devops
-# docker image rm phximenes/node:devops
-# docker image rm phximenes/redis:devops
-# docker image rm redis
-# docker image rm nginx
-# docker image rm daveamit/node-alpine-grpc:latest
-# docker images
-# docker ps -a
-# docker volume ls
 
 ```
 
@@ -165,7 +156,17 @@ Se acessarmos o IP:80, iremos acessar a nossa aplicação. Olhar os logs pelo do
 
 Para terminar nossa aplicação temos que rodar o comando do docker-compose abaixo:
 ```sh
-$ docker-compose down
+# docker-compose down
+# docker image rm phximenes/nginx:devops
+# docker image rm phximenes/node:devops
+# docker image rm phximenes/redis:devops
+# docker image rm redis
+# docker image rm nginx
+# docker image rm daveamit/node-alpine-grpc:latest
+# docker images
+# docker ps -a
+# docker volume ls
+
 ```
 
 
