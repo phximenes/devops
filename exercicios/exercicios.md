@@ -60,16 +60,17 @@ Entrar no host A, e instalar os pacotes abaixo, que incluem Git, Python, Pip e o
 ```sh
 
 $ sudo su
-$ apt-get install git -y
-$ curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-$ chmod +x /usr/local/bin/docker-compose
-$ ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+# apt-get install git -y
+# curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 Com os pacotes instalados, agora iremos baixar o código fonte e começaremos a fazer os build's e rodar os containers.
 ```sh
-$ cd /home/ubuntu
-$ git clone https://github.com/jonathanbaraldi/devops
-$ cd devops/exercicios/app
+# cd /home/ubuntu
+# git clone https://github.com/jonathanbaraldi/devops
+# cd devops/exercicios/app
+# chown -R ubuntu:ubuntu /home/ubuntu/devops/
 ```
 
 
