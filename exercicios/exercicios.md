@@ -32,11 +32,11 @@ $ sudo su
 # curl https://releases.rancher.com/install-docker/19.03.sh | sh
 # usermod -aG docker ubuntu
 
-# ping rancher.ximenes.tec.br
-# ping k8s-1.ximenes.tec.br
-# ping k8s-2.ximenes.tec.br
-# ping k8s-3.ximenes.tec.br
-# ping xpto.rancher.tec.br
+# dig rancher.ximenes.tec.br
+# dig k8s-1.ximenes.tec.br
+# dig k8s-2.ximenes.tec.br
+# dig k8s-3.ximenes.tec.br
+# dig xpto.rancher.tec.br
 # ping 10.0.0.4
 # ping 10.0.1.4
 # ping 10.0.2.4
