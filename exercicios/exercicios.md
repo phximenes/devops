@@ -5,7 +5,7 @@
 - 1 domínio
 - Sistema operacional Ubuntu 16.04 LTS
 
-- Domínio usado pelo instrutor do curso é: dev-ops-ninja.com
+- Domínio usado pelo instrutor do curso é: ximenes.tec.br
 
 https://github.com/jonathanbaraldi/devops
 
@@ -18,10 +18,15 @@ https://github.com/jonathanbaraldi/devops
 
 ```sh
 
-$ ssh -i devops-ninja.pem ubuntu@<ip>  - RancherSerber - HOST A
-$ ssh -i devops-ninja.pem ubuntu@<ip>  - k8s-1         - HOST B
-$ ssh -i devops-ninja.pem ubuntu@<ip>  - k8s-2         - HOST C
-$ ssh -i devops-ninja.pem ubuntu@<ip>  - k8s-3         - HOST D
+$ ssh -i C:\Users\pedro\Downloads\ubuntu.pem ubuntu@rancher.ximenes.tec.br - HOST A
+$ ssh -i C:\Users\pedro\Downloads\ubuntu.pem ubuntu@k8s-1.ximenes.tec.br   - HOST B
+$ ssh -i C:\Users\pedro\Downloads\ubuntu.pem ubuntu@k8s-2.ximenes.tec.br   - HOST C
+$ ssh -i C:\Users\pedro\Downloads\ubuntu.pem ubuntu@k8s-3.ximenes.tec.br   - HOST D
+
+$ apt-get install vim net-tools
+$ apt-get update
+$ apt-get upgrade
+$ apt autoremove
 
 $ sudo su
 $ curl https://releases.rancher.com/install-docker/19.03.sh | sh
@@ -61,8 +66,8 @@ $ cd devops/exercicios/app
 Iremos fazer o build da imagem do Redis para a nossa aplicação.
 ```sh
 $ cd redis
-$ docker build -t <dockerhub-user>/redis:devops .
-$ docker run -d --name redis -p 6379:6379 <dockerhub-user>/redis:devops
+$ docker build -t phximenes/redis:devops .
+$ docker run -d --name redis -p 6379:6379 phximenes/redis:devops
 $ docker ps
 $ docker logs redis
 ```
@@ -74,11 +79,11 @@ Com isso temos o container do Redis rodando na porta 6379.
 Iremos fazer o build do container do NodeJs, que contém a nossa aplicação.
 ```sh
 $ cd ../node
-$ docker build -t <dockerhub-user>/node:devops .
+$ docker build -t phximenes/node:devops .
 ```
 Agora iremos rodar a imagem do node, fazendo a ligação dela com o container do Redis.
 ```sh
-$ docker run -d --name node -p 8080:8080 --link redis <dockerhub-user>/node:devops
+$ docker run -d --name node -p 8080:8080 --link redis phximenes/node:devops
 $ docker ps 
 $ docker logs node
 ```
@@ -90,11 +95,11 @@ Com isso temos nossa aplicação rodando, e conectada no Redis. A api para verif
 Iremos fazer o build do container do nginx, que será nosso balanceador de carga.
 ```sh
 $ cd ../nginx
-$ docker build -t <dockerhub-user>/nginx:devops .
+$ docker build -t phximenes/nginx:devops .
 ```
 Criando o container do nginx a partir da imagem e fazendo a ligação com o container do Node
 ```sh
-$ docker run -d --name nginx -p 80:80 --link node <dockerhub-user>/nginx:devops
+$ docker run -d --name nginx -p 80:80 --link node phximenes/nginx:devops
 $ docker ps
 ```
 Podemos acessar então nossa aplicação nas portas 80 e 8080 no ip da nossa instância.
@@ -112,9 +117,9 @@ Para rodar nosso docker-compose, precisamos remover todos os containers que est�
 
 É preciso editar o arquivo docker-compose.yml, onde estão os nomes das imagens e colocar o seu nome de usuário.
 
-Linha 8 = <dockerhub-user>/nginx:devops
-Linha 18 = image: <dockerhub-user>/redis:devops
-Linha 37 = image: <dockerhub-user>/node:devops
+Linha 8 = phximenes/nginx:devops
+Linha 18 = image: phximenes/redis:devops
+Linha 37 = image: phximenes/node:devops
 
 Após alterar e colocar o nome correto das imagens, rodar o comando de up -d para subir a stack toda.
 
@@ -187,7 +192,7 @@ Adicionar o host B e host C.
 
 Pegar o seu comando no seu rancher.
 ```sh
-$ docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.dev-ops-ninja.com --token 8xf5r2ttrvvqcxdhwsbx9cvb7s9wgwdmgfbmzr4mt7smjbg4jgj292 --ca-checksum 61ac25d1c389b26c5c9acd98a1c167dbfb394c6c1c3019d855901704d8bae282 --node-name k8s-1 --etcd --controlplane --worker
+$ docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.ximenes.tec.br --token 8xf5r2ttrvvqcxdhwsbx9cvb7s9wgwdmgfbmzr4mt7smjbg4jgj292 --ca-checksum 61ac25d1c389b26c5c9acd98a1c167dbfb394c6c1c3019d855901704d8bae282 --node-name k8s-1 --etcd --controlplane --worker
 ```
 Será um cluster com 3 nós.
 Navegar pelo Rancher e ver os painéis e funcionalidades.
@@ -236,7 +241,7 @@ $ kubectl get nodes
 
 ### Traefik - DNS
 
-*.rancher.dev-ops-ninja.com
+*.rancher.ximenes.tec.br
 
 
 O Traefik é a aplicação que iremos usar como ingress. Ele irá ficar escutando pelas entradas de DNS que o cluster deve responder. Ele possui um dashboard de  monitoramento e com um resumo de todas as entradas que estão no cluster.
@@ -285,8 +290,8 @@ O Graylog é a aplicação que iremos usar como agregador de logs do cluster. Os
 Para instalar o Graylog, iremos aplicar o template dele, que está em graylog.yml. Para isso, é preciso que sejam editados 2 pontos no arquivo.
 
 
-Linha 264 - value: http://graylog.rancher.<dominino>/api
-Linha 340 - host: graylog.rancher.<dominio>
+Linha 264 - value: http://graylog.rancher.ximenes.tec.br/api
+Linha 340 - host: graylog.rancher.ximenes.tec.br
 
 Substituir o {user}, pelo nome do aluno. Após substituir, aplicar e entrar no Graylog para configurar.
 ```sh
