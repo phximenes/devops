@@ -279,7 +279,7 @@ $ kubectl --namespace=kube-system get pods
 ```
 Agora iremos configurar o DNS pelo qual o Traefik irá responder. No arquivo ui.yml, localizar a url, e fazer a alteração. Após a alteração feita, iremos rodar o comando abaixo para aplicar o deployment no cluster.
 ```sh
-$ cd treinamento-kubernetes/exercicios/
+$ cd devops/exercicios/
 $ kubectl apply -f ui.yml
 ```
 
