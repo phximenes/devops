@@ -68,20 +68,20 @@ $ sudo su
 Com os pacotes instalados, agora iremos baixar o código fonte e começaremos a fazer os build's e rodar os containers.
 ```sh
 # cd /home/ubuntu
-# git clone https://github.com/jonathanbaraldi/devops
-# cd devops/exercicios/app
+# git clone https://github.com/phximenes/devops
 # chown -R ubuntu:ubuntu /home/ubuntu/devops/
+# cd devops/exercicios/app
 ```
 
 
 #### Container=REDIS
 Iremos fazer o build da imagem do Redis para a nossa aplicação.
 ```sh
-$ cd redis
-$ docker build -t phximenes/redis:devops .
-$ docker run -d --name redis -p 6379:6379 phximenes/redis:devops
-$ docker ps
-$ docker logs redis
+# cd redis
+# docker build -t phximenes/redis:devops .
+# docker run -d --name redis -p 6379:6379 phximenes/redis:devops
+# docker ps
+# docker logs redis
 ```
 Com isso temos o container do Redis rodando na porta 6379.
 
@@ -90,14 +90,14 @@ Com isso temos o container do Redis rodando na porta 6379.
 #### Container=NODE
 Iremos fazer o build do container do NodeJs, que contém a nossa aplicação.
 ```sh
-$ cd ../node
-$ docker build -t phximenes/node:devops .
+# cd ../node
+# docker build -t phximenes/node:devops .
 ```
 Agora iremos rodar a imagem do node, fazendo a ligação dela com o container do Redis.
 ```sh
-$ docker run -d --name node -p 8080:8080 --link redis phximenes/node:devops
-$ docker ps 
-$ docker logs node
+# docker run -d --name node -p 8080:8080 --link redis phximenes/node:devops
+# docker ps
+# docker logs node
 ```
 Com isso temos nossa aplicação rodando, e conectada no Redis. A api para verificação pode ser acessada em /redis.
 
@@ -106,20 +106,37 @@ Com isso temos nossa aplicação rodando, e conectada no Redis. A api para verif
 #### Container=NGINX
 Iremos fazer o build do container do nginx, que será nosso balanceador de carga.
 ```sh
-$ cd ../nginx
-$ docker build -t phximenes/nginx:devops .
+# cd ../nginx
+# docker build -t phximenes/nginx:devops .
 ```
 Criando o container do nginx a partir da imagem e fazendo a ligação com o container do Node
 ```sh
-$ docker run -d --name nginx -p 80:80 --link node phximenes/nginx:devops
-$ docker ps
+# docker run -d --name nginx -p 80:80 --link node phximenes/nginx:devops
+# docker ps
 ```
 Podemos acessar então nossa aplicação nas portas 80 e 8080 no ip da nossa instância.
+http://rancher.ximenes.tec.br/
+http://rancher.ximenes.tec.br:8080/
 
 Iremos acessar a api em /redis para nos certificar que está tudo ok, e depois iremos limpar todos os containers e volumes.
+http://rancher.ximenes.tec.br/redis/
+
 ```sh
-$ docker rm -f $(docker ps -a -q)
-$ docker volume rm $(docker volume ls)
+
+# curl http://rancher.ximenes.tec.br/redis/
+
+# docker rm -f $(docker ps -a -q)
+# docker volume rm $(docker volume ls)
+# docker image rm phximenes/nginx:devops
+# docker image rm phximenes/node:devops
+# docker image rm phximenes/redis:devops
+# docker image rm redis
+# docker image rm nginx
+# docker image rm daveamit/node-alpine-grpc:latest
+# docker images
+# docker ps -a
+# docker volume ls
+
 ```
 
 
