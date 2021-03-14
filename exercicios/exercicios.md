@@ -36,7 +36,7 @@ $ sudo su
 # dig k8s-1.ximenes.tec.br
 # dig k8s-2.ximenes.tec.br
 # dig k8s-3.ximenes.tec.br
-# dig xpto.rancher.tec.br
+# dig xpto.rancher.ximenes.tec.br
 # ping 10.0.0.4
 # ping 10.0.1.4
 # ping 10.0.2.4
