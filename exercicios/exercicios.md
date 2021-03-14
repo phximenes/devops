@@ -290,8 +290,8 @@ O Graylog é a aplicação que iremos usar como agregador de logs do cluster. Os
 Para instalar o Graylog, iremos aplicar o template dele, que está em graylog.yml. Para isso, é preciso que sejam editados 2 pontos no arquivo.
 
 
-Linha 264 - value: http://graylog.rancher.ximenes.tec.br/api
-Linha 340 - host: graylog.rancher.ximenes.tec.br
+Linha 265 - value: http://graylog.rancher.ximenes.tec.br/api
+Linha 341 - host: graylog.rancher.ximenes.tec.br
 
 Substituir o {user}, pelo nome do aluno. Após substituir, aplicar e entrar no Graylog para configurar.
 ```sh
