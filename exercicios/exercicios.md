@@ -23,14 +23,21 @@ $ ssh -i C:\Users\pedro\Downloads\ubuntu.pem ubuntu@k8s-1.ximenes.tec.br   - HOS
 $ ssh -i C:\Users\pedro\Downloads\ubuntu.pem ubuntu@k8s-2.ximenes.tec.br   - HOST C
 $ ssh -i C:\Users\pedro\Downloads\ubuntu.pem ubuntu@k8s-3.ximenes.tec.br   - HOST D
 
-$ apt-get install vim net-tools
-$ apt-get update
-$ apt-get upgrade
-$ apt autoremove
-
 $ sudo su
-$ curl https://releases.rancher.com/install-docker/19.03.sh | sh
-$ usermod -aG docker ubuntu
+# apt-get install vim net-tools
+# apt-get update
+# apt-get upgrade
+# apt autoremove
+
+# curl https://releases.rancher.com/install-docker/19.03.sh | sh
+# usermod -aG docker ubuntu
+
+# ping rancher.ximenes.tec.br
+# ping k8s-1.ximenes.tec.br
+# ping k8s-2.ximenes.tec.br
+# ping k8s-3.ximenes.tec.br
+# ping xpto.rancher.tec.br
+
 ```
 
 
