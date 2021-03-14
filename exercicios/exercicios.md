@@ -156,13 +156,9 @@ Se acessarmos o IP:80, iremos acessar a nossa aplicação. Olhar os logs pelo do
 
 Para terminar nossa aplicação temos que rodar o comando do docker-compose abaixo:
 ```sh
+
 # docker-compose down
-# docker image rm phximenes/nginx:devops
-# docker image rm phximenes/node:devops
-# docker image rm phximenes/redis:devops
-# docker image rm redis
-# docker image rm nginx
-# docker image rm daveamit/node-alpine-grpc:latest
+
 # docker images
 # docker ps -a
 # docker volume ls
@@ -187,13 +183,13 @@ Nesse exercício iremos instalar o Rancher 2.2.5 versão single node. Isso signi
 
 Entrar no host A, que será usado para hospedar o Rancher Server. Iremos verficar se não tem nenhum container rodando ou parado, e depois iremos instalar o Rancher.
 ```sh
-$ docker ps -a
-$ docker run -d --name rancher --restart=unless-stopped -v /opt/rancher:/var/lib/rancher  -p 80:80 -p 443:443 rancher/rancher:v2.4.3
+# docker ps -a
+# docker run -d --name rancher --restart=unless-stopped -v /opt/rancher:/var/lib/rancher  -p 80:80 -p 443:443 rancher/rancher:v2.4.3
 ```
 Com o Rancher já rodando, irei adicionar a entrada de cada DNS para o IP de cada máquina.
 
 ```sh
-$ rancher.<dominio> = IP do host A
+$ rancher.ximenes.tec.br = IP do host A
 ```
 
 
@@ -222,7 +218,7 @@ Adicionar o host B e host C.
 
 Pegar o seu comando no seu rancher.
 ```sh
-$ docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.ximenes.tec.br --token 8xf5r2ttrvvqcxdhwsbx9cvb7s9wgwdmgfbmzr4mt7smjbg4jgj292 --ca-checksum 61ac25d1c389b26c5c9acd98a1c167dbfb394c6c1c3019d855901704d8bae282 --node-name k8s-1 --etcd --controlplane --worker
+# docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.ximenes.tec.br --token 8xf5r2ttrvvqcxdhwsbx9cvb7s9wgwdmgfbmzr4mt7smjbg4jgj292 --ca-checksum 61ac25d1c389b26c5c9acd98a1c167dbfb394c6c1c3019d855901704d8bae282 --node-name k8s-1 --etcd --controlplane --worker
 ```
 Será um cluster com 3 nós.
 Navegar pelo Rancher e ver os painéis e funcionalidades.
