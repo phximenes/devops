@@ -153,10 +153,10 @@ Linha 37 = image: phximenes/node:devops
 Após alterar e colocar o nome correto das imagens, rodar o comando de up -d para subir a stack toda.
 
 ```sh
-$ cd ..
-$ vi docker-compose.yml
-$ docker-compose -f docker-compose.yml up -d
-$ curl <ip>:80 
+# cd ..
+# vim docker-compose.yml
+# docker-compose -f docker-compose.yml up -d
+# curl http://rancher.ximenes.tec.br/redis/
 	----------------------------------
 	This page has been viewed 29 times
 	----------------------------------
