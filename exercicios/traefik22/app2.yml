@@ -44,7 +44,7 @@ spec:
 
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: extensions/v1
 metadata:
   name: whoami5
   annotations:
@@ -53,12 +53,9 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls.certresolver: default
 spec:
   rules:
-    - host: app.rancher.<SEU_DOMINIO>
+    - host: app.rancher.itacarambi.tec.br
       http:
         paths:
           - backend:
               serviceName: whoami5
               servicePort: 80
-
-
-

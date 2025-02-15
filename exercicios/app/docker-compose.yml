@@ -1,11 +1,11 @@
 # Versão 2 do Docker-Compose
-version: '2'
+# version: '2'
 
 services:
     
     nginx:
         restart: "always"
-        image: salimfpf/nginx:devops
+        image: phximenes/nginx:devops
         ports:
             - "80:80"
         links:
@@ -15,7 +15,7 @@ services:
             
     redis:
         restart: "always"
-        image: salimfpf/redis:devops
+        image: phximenes/redis:devops
         ports:
             - 6379
 
@@ -34,7 +34,7 @@ services:
 
     node:
         restart: "always"
-        image: salimfpf/node:devops
+        image: phximenes/node:devops
         links:
             - redis
             - mysql

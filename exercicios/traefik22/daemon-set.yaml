@@ -17,7 +17,7 @@ spec:
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik:v2.2
+      - image: traefik:v2.3
         name: traefik-ingress-lb
         ports:
         - name: http
@@ -55,7 +55,7 @@ spec:
         # - --log.level=debug
 
         # Let's Encrypt Configurtion.
-        - --certificatesresolvers.default.acme.email=<SEU_EMAIL>
+        - --certificatesresolvers.default.acme.email=pedro.ximenes@itacarambi.tec.br
         - --certificatesresolvers.default.acme.storage=acme.json
         - --certificatesresolvers.default.acme.tlschallenge
         # Use the staging ACME server. Uncomment this while testing to prevent
@@ -67,8 +67,3 @@ spec:
         - --metrics=true
         - --metrics.prometheus=true
         #- --metrics.prometheus.entryPoint="web-secure"
-
-
-
-
-
