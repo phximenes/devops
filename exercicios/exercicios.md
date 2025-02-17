@@ -5,7 +5,11 @@
 - 1 domínio
 - Sistema operacional Ubuntu 16.04 LTS
 
-- Domínio usado pelo instrutor do curso é: dev-ops-ninja.com
+- Domínio usado pelo instrutor do curso é: ctechsis.com
+
+
+aws ec2 run-instances --image-id "ami-055943271915205db" --instance-type "t3.medium" --key-name "pedro" --block-device-mappings '{"DeviceName":"/dev/sda1","Ebs":{"Encrypted":false,"DeleteOnTermination":true,"Iops":3000,"SnapshotId":"snap-0c58ff5e6de735c21","VolumeSize":50,"VolumeType":"gp3","Throughput":125}}' --network-interfaces '{"SubnetId":"subnet-0c30604fc18227fc0","AssociatePublicIpAddress":true,"DeviceIndex":0,"Groups":["sg-06ffa7a3da5f548ae"]}' --credit-specification '{"CpuCredits":"unlimited"}' --tag-specifications '{"ResourceType":"instance","Tags":[{"Key":"Name","Value":"rancher.ctechsis.com"}]}' --metadata-options '{"HttpEndpoint":"enabled","HttpPutResponseHopLimit":2,"HttpTokens":"required"}' --private-dns-name-options '{"HostnameType":"ip-name","EnableResourceNameDnsARecord":false,"EnableResourceNameDnsAAAARecord":false}' --count "4"
+
 
 https://github.com/jonathanbaraldi/devops
 
@@ -23,9 +27,9 @@ $ ssh -i devops-ninja.pem ubuntu@<ip>  - k8s-1         - HOST B
 $ ssh -i devops-ninja.pem ubuntu@<ip>  - k8s-2         - HOST C
 $ ssh -i devops-ninja.pem ubuntu@<ip>  - k8s-3         - HOST D
 
-$ sudo su
-$ curl https://releases.rancher.com/install-docker/19.03.sh | sh
-$ usermod -aG docker ubuntu
+sudo su -
+
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc;do apt-get remove $pkg;done;apt-get update;apt-get install ca-certificates curl;install -m 0755 -d /etc/apt/keyrings;curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc;chmod a+r /etc/apt/keyrings/docker.asc;echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null;apt-get update;apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin;docker run hello-world
 ```
 
 
@@ -38,22 +42,16 @@ $ usermod -aG docker ubuntu
 
 Nesse exercício iremos construir as imagens dos containers que iremos usar, colocar elas para rodar em conjunto com o docker-compose. 
 
-Sempre que aparecer <dockerhub-user>, você precisa substituir pelo seu usuário no DockerHub.
+Sempre que aparecer \<dockerhub-user>\, você precisa substituir pelo seu usuário no DockerHub.
 
 Entrar no host A, e instalar os pacotes abaixo, que incluem Git, Python, Pip e o Docker-compose.
 ```sh
 
-$ sudo su
-$ apt-get install git -y
-$ curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-$ chmod +x /usr/local/bin/docker-compose
-$ ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose;chmod +x /usr/local/bin/docker-compose;ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 Com os pacotes instalados, agora iremos baixar o código fonte e começaremos a fazer os build's e rodar os containers.
 ```sh
-$ cd /home/ubuntu
-$ git clone https://github.com/jonathanbaraldi/devops
-$ cd devops/exercicios/app
+cd /opt;git clone https://github.com/jonathanbaraldi/devops /opt/devops;cd devops/exercicios/app
 ```
 
 
@@ -61,8 +59,8 @@ $ cd devops/exercicios/app
 Iremos fazer o build da imagem do Redis para a nossa aplicação.
 ```sh
 $ cd redis
-$ docker build -t <dockerhub-user>/redis:devops .
-$ docker run -d --name redis -p 6379:6379 <dockerhub-user>/redis:devops
+$ docker build -t phximenes/redis:devops .
+$ docker run -d --name redis -p 6379:6379 phximenes/redis:devops
 $ docker ps
 $ docker logs redis
 ```
@@ -74,12 +72,12 @@ Com isso temos o container do Redis rodando na porta 6379.
 Iremos fazer o build do container do NodeJs, que contém a nossa aplicação.
 ```sh
 $ cd ../node
-$ docker build -t <dockerhub-user>/node:devops .
+$ docker build -t phximenes/node:devops .
 ```
 Agora iremos rodar a imagem do node, fazendo a ligação dela com o container do Redis.
 ```sh
-$ docker run -d --name node -p 8080:8080 --link redis <dockerhub-user>/node:devops
-$ docker ps 
+$ docker run -d --name node -p 8080:8080 --link redis phximenes/node:devops
+$ docker ps
 $ docker logs node
 ```
 Com isso temos nossa aplicação rodando, e conectada no Redis. A api para verificação pode ser acessada em /redis.
@@ -90,11 +88,11 @@ Com isso temos nossa aplicação rodando, e conectada no Redis. A api para verif
 Iremos fazer o build do container do nginx, que será nosso balanceador de carga.
 ```sh
 $ cd ../nginx
-$ docker build -t <dockerhub-user>/nginx:devops .
+$ docker build -t phximenes/nginx:devops .
 ```
 Criando o container do nginx a partir da imagem e fazendo a ligação com o container do Node
 ```sh
-$ docker run -d --name nginx -p 80:80 --link node <dockerhub-user>/nginx:devops
+$ docker run -d --name nginx -p 80:80 --link node phximenes/nginx:devops
 $ docker ps
 ```
 Podemos acessar então nossa aplicação nas portas 80 e 8080 no ip da nossa instância.
@@ -112,17 +110,17 @@ Para rodar nosso docker-compose, precisamos remover todos os containers que est�
 
 É preciso editar o arquivo docker-compose.yml, onde estão os nomes das imagens e colocar o seu nome de usuário.
 
-- Linha 8 = <dockerhub-user>/nginx:devops
-- Linha 18 = image: <dockerhub-user>/redis:devops
-- Linha 37 = image: <dockerhub-user>/node:devops
+- Linha 8 = phximenes/nginx:devops
+- Linha 18 = image: phximenes/redis:devops
+- Linha 37 = image: phximenes/node:devops
 
 Após alterar e colocar o nome correto das imagens, rodar o comando de up -d para subir a stack toda.
 
 ```sh
 $ cd ..
-$ vi docker-compose.yml
+$ vim docker-compose.yml
 $ docker-compose -f docker-compose.yml up -d
-$ curl <ip>:80 
+$ curl localhost:80
 	----------------------------------
 	This page has been viewed 29 times
 	----------------------------------
@@ -152,13 +150,14 @@ Nesse exercício iremos instalar o Rancher 2.2.5 versão single node. Isso signi
 
 Entrar no host A, que será usado para hospedar o Rancher Server. Iremos verficar se não tem nenhum container rodando ou parado, e depois iremos instalar o Rancher.
 ```sh
-$ docker ps -a
-$ docker run -d --name rancher --restart=unless-stopped -v /opt/rancher:/var/lib/rancher  -p 80:80 -p 443:443 rancher/rancher:v2.4.3
+docker ps -a
+
+docker run -d --name rancher --restart=unless-stopped -v /opt/rancher:/var/lib/rancher  -p 80:80 -p 443:443 rancher/rancher:v2.4.3
 ```
 Com o Rancher já rodando, irei adicionar a entrada de cada DNS para o IP de cada máquina.
 
 ```sh
-$ rancher.<dominio> = IP do host A
+$ rancher.ctechsis.com = IP do host A
 ```
 
 
@@ -187,7 +186,11 @@ Adicionar o host B e host C.
 
 Pegar o seu comando no seu rancher.
 ```sh
-$ docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.dev-ops-ninja.com --token 8xf5r2ttrvvqcxdhwsbx9cvb7s9wgwdmgfbmzr4mt7smjbg4jgj292 --ca-checksum 61ac25d1c389b26c5c9acd98a1c167dbfb394c6c1c3019d855901704d8bae282 --node-name k8s-1 --etcd --controlplane --worker
+docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.ctechsis.com --token 6sw6p7lcslzm5bj69jl6p5w7xdpz5n2s48scpv9j4d4r9hn2gc7ps9 --ca-checksum ea4f561b43a98f9a21bf4f5d78e70557f12b82d198b64b1673fba52e5c4deaf0 --node-name rancher-k8s-1.ctechsis.com --etcd --controlplane --worker
+
+docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.ctechsis.com --token 6sw6p7lcslzm5bj69jl6p5w7xdpz5n2s48scpv9j4d4r9hn2gc7ps9 --ca-checksum ea4f561b43a98f9a21bf4f5d78e70557f12b82d198b64b1673fba52e5c4deaf0 --node-name rancher-k8s-2.ctechsis.com --etcd --controlplane --worker
+
+docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.4.3 --server https://rancher.ctechsis.com --token 6sw6p7lcslzm5bj69jl6p5w7xdpz5n2s48scpv9j4d4r9hn2gc7ps9 --ca-checksum ea4f561b43a98f9a21bf4f5d78e70557f12b82d198b64b1673fba52e5c4deaf0 --node-name rancher-k8s-3.ctechsis.com --etcd --controlplane --worker
 ```
 Será um cluster com 3 nós.
 Navegar pelo Rancher e ver os painéis e funcionalidades.
@@ -210,19 +213,15 @@ Navegar pelo Rancher e ver os painéis e funcionalidades.
 Agora iremos instalar o kubectl, que é a CLI do kubernetes. Através do kubectl é que iremos interagir com o cluster.
 ```sh
 
-$ sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2
-$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-$ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-$ sudo apt-get update
-$ sudo apt-get install -y kubectl
+apt-get install -y apt-transport-https ca-certificates curl gnupg;curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg;chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg;echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list;chmod 644 /etc/apt/sources.list.d/kubernetes.list;apt-get update;apt-get install -y kubectl;mkdir ~/.kube
 ```
 
 Com o kubectl instalado, pegar as credenciais de acesso no Rancher e configurar o kubectl.
 
 ```sh
-$ mkdir ~/.kube
-$ vi ~/.kube/config
-$ kubectl get nodes
+vim ~/.kube/config
+kubectl get nodes
+kubectl cluster-info
 ```
 
 
